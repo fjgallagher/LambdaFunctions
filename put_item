@@ -10,7 +10,7 @@ const db = new AWS.DynamoDB.DocumentClient({
 // create an event to store
 exports.handler = async (event) => {
     const params = {
-        TableName: 'customers',
+        TableName: 'yourTableName',
         Item: {
             id: 'yourID',
             email: 'yourEmail',
