@@ -1,0 +1,21 @@
+const AWS = require('aws-sdk');
+AWS.config.update({region: "us-east-1"});
+
+const docClient = new AWS.DynamoDB.DocumentClient();
+const tableName = "customers";
+
+exports.handler = async (event, context, callback) => {
+    let params = {TableName: tableName};
+    let scanResults = [];
+    let items;
+    
+    console.log("Starting scan ... ");
+    
+    do {
+        items = await docClient.scan(params).promise();
+        items.Items.forEach((item) => scanResults.push(item));
+        params.ExclusiveStartKey = items.LastEvaluatedKey;
+    } while (typeof items.LastEvaluatedKey != "undefined");
+    
+    callback(null, scanResults);
+};
