@@ -1,0 +1,29 @@
+"use strict"
+const AWS = require("aws-sdk");
+
+AWS.config.update({region: "us-east-1"});
+
+exports.handler = async (event) => {
+    console.log(JSON.stringify(event));
+    console.log("----");
+    
+    const {id, email, firstname, lastname} = event;
+    console.log(id);
+    
+    let documentClient = new AWS.DynamoDB.DocumentClient();
+    const params = {
+        TableName: "customers",
+        Item: {
+            "id": id,
+            "email": email,
+            "firstname": firstname,
+            "lastname": lastname
+        }
+    };
+    
+    try {
+        const data = await documentClient.put(params).promise();
+        console.log("Added item:", JSON.stringify(data));
+    } catch (error) {
+        console.log(error);
+    }
